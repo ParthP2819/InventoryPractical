@@ -1,0 +1,32 @@
+﻿@model IEnumerable<InnVM>
+@{
+    ViewData["Title"] = "Read";
+}
+<h1>Data</h1>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Months</th>
+            <th>ProductCode</th>
+            <th>total_purchase_qty</th>
+            <th>total_pur_Amt</th>
+            <th>sale_qty</th>
+            <th>sale_price</th>
+            <th>Profit_Loss</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Date</td>
+                <td>@user.ProductCode</td>
+                <td>@user.TotalPurchaseQty</td>
+                <td>@user.Total_Pur_Amt</td>
+                <td>@user.Total_Sale_Qty</td>
+                <td>@user.Total_Sale_Amt</td>
+                <td>@user.Profit_Loss</td>
+            </tr>
+        }
+    </tbody>
+</table>
