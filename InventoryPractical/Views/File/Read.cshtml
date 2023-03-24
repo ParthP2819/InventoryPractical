@@ -2,17 +2,19 @@
 @{
     ViewData["Title"] = "Read";
 }
-<h1>Data</h1>
-<table class="table table-bordered table-striped">
+<h1 class="text-center">Excel-Data</h1>
+<table class="table table-bordered table-striped text-center">
     <thead>
         <tr>
-            <th>Months</th>
-            <th>ProductCode</th>
-            <th>total_purchase_qty</th>
-            <th>total_pur_Amt</th>
-            <th>sale_qty</th>
-            <th>sale_price</th>
-            <th>Profit_Loss</th>
+            <th> Date </th>
+            <th> Product Code </th>
+            <th> Opening Quantity </th>
+            <th> Total Purchase Quantity </th>
+            <th> Total Purchase Amount </th>
+            <th> Total Sale Quantity </th>
+            <th> Total Sale Amount </th>
+            <th> Profit & Loss</th>
+            <th> Closing Quantity </th>
         </tr>
     </thead>
     <tbody>
@@ -21,11 +23,13 @@
             <tr>
                 <td>@user.Date</td>
                 <td>@user.ProductCode</td>
-                <td>@user.TotalPurchaseQty</td>
-                <td>@user.Total_Pur_Amt</td>
-                <td>@user.Total_Sale_Qty</td>
-                <td>@user.Total_Sale_Amt</td>
+                <td>@user.Opening_Quantity </td>
+                <td>@user.Total_Purchase_Quantity</td>
+                <td>@user.Total_Purchase_Amount</td>
+                <td>@user.Total_Sale_Quantity</td>
+                <td>@user.Total_Sale_Amount</td>
                 <td>@user.Profit_Loss</td>
+                <td>@user.Closing_Quantity</td>
             </tr>
         }
     </tbody>
