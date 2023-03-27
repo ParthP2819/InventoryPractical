@@ -12,5 +12,6 @@
         public string Profit_Loss { get; set; }
         public double Opening_Quantity { get; set; }
         public double Closing_Quantity { get; set; }
+        public double Purchase_Price { get; set; }
     }
 }

@@ -19,13 +19,13 @@ namespace InventoryPractical.Controllers
         {
             var prodCod = "";
 
-            double Purchase_qty = 0;
+            double TotalPurchase_qty = 0;
             double Purchase_price = 0;
             double Sale_qty = 0;
             double Sale_price = 0;
                       
             double profitloss = 0;
-            double totalPurcharse = 0;
+            double TotalPurcharseAmt = 0;
             double totalSale = 0;
 
 
@@ -53,7 +53,7 @@ namespace InventoryPractical.Controllers
                             Price = double.Parse(reader.GetValue(3).ToString()),
                             Date = DateTime.Parse(reader.GetValue(4).ToString())
                         });
-                    }
+                    } 
                 }
             }
 
@@ -62,6 +62,7 @@ namespace InventoryPractical.Controllers
 
             foreach (var item in month)
             {
+                //Purchase_price = 0;
                 // groupby product-wise
                 var product = item.GroupBy(x => x.ProductCode).ToList();
 
@@ -71,13 +72,13 @@ namespace InventoryPractical.Controllers
                     var productcode = "";
                     prodCod = "";
 
-                    Purchase_qty = 0;
+                    TotalPurchase_qty = 0;
                     Purchase_price = 0;
                     Sale_qty = 0;
                     Sale_price = 0;
 
                     profitloss = 0;
-                    totalPurcharse = 0;
+                    TotalPurcharseAmt = 0;
                     totalSale = 0;                    
                     double closeQty = 0;
                     double openQty = 0;
@@ -89,22 +90,23 @@ namespace InventoryPractical.Controllers
                         productcode = type.ProductCode;
                         if (type.EventType == 1)
                         {
-                            Purchase_qty += type.Quantity;
-                            Purchase_price += type.Price;
-                            totalPurcharse = totalPurcharse + (Convert.ToDouble(type.Price) * type.Quantity);
+                           TotalPurchase_qty += type.Quantity;
+                            TotalPurcharseAmt = TotalPurcharseAmt + (Convert.ToDouble(type.Price) * type.Quantity);
                         }
                         else
                         {
                             Sale_qty += type.Quantity;
                             Sale_price += type.Price;
                             totalSale = Convert.ToDouble(Sale_qty) * Sale_price;
-                            if(Purchase_price==0  && resultOpen1!=null)
-                            {
-                                profitloss = (Sale_price * Sale_qty) - (Sale_qty * resultOpen1.Total_Purchase_Amount);
-                            }
+                            //if(Purchase_price==0  && resultOpen1!=null)
+                            //{
+                            //    profitloss = (Sale_price * Sale_qty) - (Sale_qty * resultOpen1.Total_Purchase_Amount);
+                            //}
                             profitloss = (Sale_price * Sale_qty) - (Sale_qty * Purchase_price);
 
                         }
+                        Purchase_price = TotalPurcharseAmt/ TotalPurchase_qty;
+
                     }
                     var resultOpen = inventoryVMs.LastOrDefault(x => x.ProductCode == productcode.ToString());
 
@@ -114,14 +116,16 @@ namespace InventoryPractical.Controllers
                         {
                             Date = date.ToString("d/MMMM/yyyy"),
                             ProductCode = productcode,
-                            Total_Purchase_Quantity = Convert.ToDouble(Purchase_qty),
-                            Total_Purchase_Amount = totalPurcharse,
+                            Purchase_Price = TotalPurcharseAmt/TotalPurchase_qty,
+                            Total_Purchase_Quantity = Convert.ToDouble(TotalPurchase_qty),
+                            Total_Purchase_Amount = TotalPurcharseAmt,
                             Total_Sale_Quantity = Sale_qty.ToString(),
                             Total_Sale_Amount = Convert.ToString(totalSale),
-                            Profit_Loss = profitloss.ToString(),
+                            Profit_Loss = ((Sale_qty * Sale_price) - (resultOpen.Purchase_Price * TotalPurchase_qty)).ToString(),
                             //Closing_Quantity = 0,
-                            Closing_Quantity = (resultOpen.Closing_Quantity) + Purchase_qty - Sale_qty,
+                            Closing_Quantity = (resultOpen.Closing_Quantity) + TotalPurchase_qty - Sale_qty,
                             Opening_Quantity = resultOpen.Closing_Quantity 
+                            
                         });
                     }
                     else
@@ -130,12 +134,13 @@ namespace InventoryPractical.Controllers
                         {
                             Date = date.ToString("d/MMMM/yyyy"),
                             ProductCode = productcode,
-                            Total_Purchase_Quantity = Convert.ToDouble(Purchase_qty),
-                            Total_Purchase_Amount = totalPurcharse,
+                            Purchase_Price = TotalPurcharseAmt / TotalPurchase_qty,
+                            Total_Purchase_Quantity = Convert.ToDouble(TotalPurchase_qty),
+                            Total_Purchase_Amount = TotalPurcharseAmt,
                             Total_Sale_Quantity = Sale_qty.ToString(),
                             Total_Sale_Amount = Convert.ToString(totalSale),
                             Profit_Loss = profitloss.ToString(),
-                            Closing_Quantity = (Purchase_qty - Sale_qty),
+                            Closing_Quantity = (TotalPurchase_qty - Sale_qty),
                             Opening_Quantity = 0  
                         });
                     }                                       
@@ -149,4 +154,4 @@ namespace InventoryPractical.Controllers
             return View(Tdata);
         }     
     }
-}  
+}
