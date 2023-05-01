@@ -15,9 +15,9 @@ namespace InventoryPractical.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(IFormFile file)
+        public IActionResult Index(IFormFile file) 
         {
-            var prodCod = "";
+            var prodCs = "";
 
             double TotalPurchase_qty = 0;
             double Purchase_price = 0;
@@ -34,7 +34,7 @@ namespace InventoryPractical.Controllers
             List<InnVM> inventoryVMs = new List<InnVM>();
 
             // creating a list to store ExcelData
-            //var excelData = new List<Inventory>();
+            
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
@@ -62,7 +62,7 @@ namespace InventoryPractical.Controllers
 
             foreach (var item in month)
             {
-                //Purchase_price = 0;
+                
                 // groupby product-wise
                 var product = item.GroupBy(x => x.ProductCode).ToList();
 
@@ -70,7 +70,7 @@ namespace InventoryPractical.Controllers
                 {                                
                     var date = DateTime.Now;
                     var productcode = "";
-                    prodCod = "";
+                    prodCs = "";
 
                     TotalPurchase_qty = 0;
                     Purchase_price = 0;
@@ -85,7 +85,7 @@ namespace InventoryPractical.Controllers
                     Purchase_price= 0;
                     foreach (var type in data)
                     {
-                        var resultOpen1 = inventoryVMs.LastOrDefault(x => x.ProductCode == productcode.ToString());
+                        var acp = inventoryVMs.LastOrDefault(x => x.ProductCode == productcode.ToString());
                         date = type.Date;
                         productcode = type.ProductCode;
                         if (type.EventType == 1)
@@ -98,19 +98,19 @@ namespace InventoryPractical.Controllers
                             Sale_qty += type.Quantity;
                             Sale_price += type.Price;
                             totalSale = Convert.ToDouble(Sale_qty) * Sale_price;
-                            //if(Purchase_price==0  && resultOpen1!=null)
-                            //{
-                            //    profitloss = (Sale_price * Sale_qty) - (Sale_qty * resultOpen1.Total_Purchase_Amount);
-                            //}
+                            if (Purchase_price == 0 && acp != null)
+                            {
+                                profitloss = (Sale_price * Sale_qty) - (Sale_qty * acp.Total_Purchase_Amount);
+                            }
                             profitloss = (Sale_price * Sale_qty) - (Sale_qty * Purchase_price);
 
                         }
                         Purchase_price = TotalPurcharseAmt/ TotalPurchase_qty;
 
                     }
-                    var resultOpen = inventoryVMs.LastOrDefault(x => x.ProductCode == productcode.ToString());
+                    var acp2 = inventoryVMs.LastOrDefault(x => x.ProductCode == productcode.ToString());
 
-                    if (resultOpen != null)
+                    if (acp2 != null)
                     {
                         inventoryVMs.Add(new InnVM
                         {
@@ -121,10 +121,9 @@ namespace InventoryPractical.Controllers
                             Total_Purchase_Amount = TotalPurcharseAmt,
                             Total_Sale_Quantity = Sale_qty.ToString(),
                             Total_Sale_Amount = Convert.ToString(totalSale),
-                            Profit_Loss = ((Sale_qty * Sale_price) - (resultOpen.Purchase_Price * TotalPurchase_qty)).ToString(),
-                            //Closing_Quantity = 0,
-                            Closing_Quantity = (resultOpen.Closing_Quantity) + TotalPurchase_qty - Sale_qty,
-                            Opening_Quantity = resultOpen.Closing_Quantity 
+                            Profit_Loss = ((Sale_qty * Sale_price) - (acp2.Purchase_Price * TotalPurchase_qty)).ToString(),
+                            Closing_Quantity = (acp2.Closing_Quantity) + TotalPurchase_qty - Sale_qty,
+                            Opening_Quantity = acp2.Closing_Quantity 
                             
                         });
                     }
